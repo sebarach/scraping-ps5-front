@@ -5,11 +5,15 @@ import axios from 'axios';
 function App() {
   const [datos,setdatos] = useState([]);
 
+
   useEffect(() => {
     const interval = setInterval(() => {
-      axios.get("http://localhost:3000/")
+      axios.get("http://localhost:3000/",{auth: {
+        username: 'sebastian',
+        password: '123' // Bad password
+      }})
       .then(res => setdatos(res.data))
-    }, 50000);
+    }, 5000);
     return () => clearInterval(interval);
   },[]);
 
