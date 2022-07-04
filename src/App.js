@@ -1,28 +1,33 @@
 import {useEffect,useState} from 'react'
 import axios from 'axios';
-
+import 'bootstrap/dist/css/bootstrap.css';
 
 function App() {
   const [datos,setdatos] = useState([]);
 
-
   useEffect(() => {
-    const interval = setInterval(() => {
-      axios.get("http://localhost:3000/",{auth: {
-        username: 'sebastian',
-        password: '123' // Bad password
+      axios.get("http://localhost:8000/",{auth: {
+        username: process.env.REACT_APP_USER,
+        password: process.env.REACT_APP_PASSWORD
       }})
       .then(res => setdatos(res.data))
-    }, 5000);
-    return () => clearInterval(interval);
   },[]);
+
+  const ReloadPrice = ()=> {
+    console.log("entra");
+    axios.get("http://localhost:8000/reloadPrice",{auth: {
+      username: process.env.REACT_APP_USER,
+      password: process.env.REACT_APP_PASSWORD
+    }})
+    .then(res => setdatos(res.data))
+  }
 
   return (
     <div className="App">
-      {console.log(datos)}
        {datos.map((value,index)=>{
-        return <h3><a target="_blank" href={value.url}><span>{value.tienda}</span></a>- $ {value.precioParse}</h3>
+        return <h3><a target="_blank" href={value.url}><span>{value.tienda}</span></a>- $ {value.precioParse} <strong>{value.precioParse < 600000 ? " - En Oferta" : ""}</strong></h3>
       })} 
+      <button onClick={ReloadPrice} class="btn btn-success">Actualizar Precios !!!!!</button>
     </div>
   );
 }
